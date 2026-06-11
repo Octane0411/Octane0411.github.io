@@ -1,8 +1,9 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { SITE, SOCIALS, PROJECTS, FOCUS } from "@/consts";
+import { SITE, SOCIALS, FOCUS } from "@/consts";
+import { getProjects } from "@/lib/github";
 
-const projects = PROJECTS;
+const projects = await getProjects();
 const focus = FOCUS;
 
 const elsewhere = [
