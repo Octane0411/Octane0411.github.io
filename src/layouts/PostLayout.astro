@@ -1,0 +1,128 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { SITE, SOCIALS } from "@/consts";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"blog">;
+  readingTime?: number;
+}
+
+const { entry, readingTime } = Astro.props;
+const { title, description, date, updated, tags, tldr } = entry.data;
+const url = new URL(`/blog/${entry.id}/`, Astro.site).href;
+
+// Article + Breadcrumb JSON-LD: the core GEO signal for citations.
+const articleLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description,
+  datePublished: date.toISOString(),
+  dateModified: (updated ?? date).toISOString(),
+  inLanguage: SITE.lang,
+  keywords: tags.join(", "),
+  mainEntityOfPage: { "@type": "WebPage", "@id": url },
+  author: {
+    "@type": "Person",
+    name: SITE.author,
+    url: SITE.url,
+    sameAs: SOCIALS.sameAs,
+  },
+  publisher: {
+    "@type": "Person",
+    name: SITE.author,
+    url: SITE.url,
+  },
+};
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Writing",
+      item: `${SITE.url}/blog`,
+    },
+    { "@type": "ListItem", position: 3, name: title, item: url },
+  ],
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[articleLd, breadcrumbLd]}
+  ogType="article"
+>
+  <article class="mx-auto max-w-[42rem] px-5 py-12 sm:py-16">
+    <header class="mb-10">
+      <h1
+        class="font-serif text-[2rem] font-medium leading-tight tracking-tight sm:text-[2.6rem]"
+      >
+        {title}
+      </h1>
+      <div
+        class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-muted)]"
+      >
+        <FormattedDate date={date} />
+        {readingTime ? <span>· {readingTime} 分钟阅读</span> : null}
+        {
+          updated && (
+            <span>· 更新于 <FormattedDate date={updated} /></span>
+          )
+        }
+      </div>
+      {
+        tags.length > 0 && (
+          <div class="mt-3 flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <span class="text-xs text-[var(--color-faint)]">#{t}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    {
+      tldr && tldr.length > 0 && (
+        <aside
+          class="mb-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5"
+        >
+          <p
+            class="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]"
+          >
+            TL;DR
+          </p>
+          <ul class="list-disc space-y-1 pl-5 text-[0.95rem] text-[var(--color-muted)]">
+            {tldr.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+
+    <div class="prose-article">
+      <slot />
+    </div>
+
+    <footer
+      class="mt-16 flex items-center justify-between border-t border-[var(--color-border)] pt-6 text-sm"
+    >
+      <a href="/blog" class="text-[var(--color-muted)] hover:text-[var(--color-text)]"
+        >← 所有文章</a
+      >
+      <a
+        href={`/blog/${entry.id}.md`}
+        class="text-[var(--color-faint)] hover:text-[var(--color-text)]"
+        title="为 AI / LLM 提供的纯 Markdown 版本"
+        >.md</a
+      >
+    </footer>
+  </article>
+</BaseLayout>

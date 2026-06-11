@@ -1,0 +1,79 @@
+---
+import { SITE } from "@/consts";
+// Importing font CSS here (not via @import in global.css) ensures Vite emits
+// the woff2 assets into the build output.
+import "@fontsource-variable/inter";
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/newsreader/wght-italic.css";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Any JSON-LD object(s) to embed for GEO / rich results. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  ogType?: "website" | "article";
+}
+
+const {
+  title,
+  description = SITE.description,
+  jsonLd,
+  ogType = "website",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
+const jsonLdList = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={SITE.author} />
+<link rel="canonical" href={canonical} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={SITE.title}
+  href={new URL("/rss.xml", Astro.site)}
+/>
+
+<!-- Open Graph / Twitter -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={SITE.title} />
+<meta property="og:locale" content={SITE.locale} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<!-- Set theme before paint to avoid flash. -->
+<script is:inline>
+  (() => {
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    if (stored === "dark" || (!stored && prefersDark)) {
+      document.documentElement.classList.add("dark");
+    }
+  })();
+</script>
+
+{
+  jsonLdList.map((data) => (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(data)}
+    />
+  ))
+}

@@ -1,0 +1,39 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  ogType?: "website" | "article";
+}
+
+const {
+  title = SITE.title,
+  description,
+  jsonLd,
+  ogType,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      jsonLd={jsonLd}
+      ogType={ogType}
+    />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

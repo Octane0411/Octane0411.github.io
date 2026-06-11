@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SOCIALS } from "@/consts";
+---
+
+<BaseLayout title="About" description="关于 Octane — Builder，专注 AI coding agents 与开发者工具。">
+  <div class="mx-auto max-w-[42rem] px-5 py-12 sm:py-16">
+    <h1 class="font-serif text-3xl font-medium tracking-tight">About</h1>
+    <div class="prose-article mt-8">
+      <p>
+        我是 Octane，一名 Builder。日常重度使用 AI coding
+        agents，并以此为方向开源工具、剖析它们的架构与实现。
+      </p>
+      <p>
+        这个站点用来沉淀我对 Claude Code、Codex、OpenCode
+        等工具的深入分析，以及构建开发者工具过程中的思考。
+      </p>
+      <h2>联系</h2>
+      <ul>
+        <li>
+          GitHub：<a href={SOCIALS.github}>@Octane0411</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

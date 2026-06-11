@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import { SITE, SOCIALS } from "@/consts";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
+
+const personLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: SITE.author,
+  url: SITE.url,
+  description: SITE.description,
+  sameAs: SOCIALS.sameAs,
+};
+const siteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.title,
+  url: SITE.url,
+  description: SITE.description,
+  inLanguage: SITE.lang,
+};
+---
+
+<BaseLayout jsonLd={[personLd, siteLd]}>
+  <div class="mx-auto max-w-3xl px-5 py-16 sm:py-24">
+    <section>
+      <h1 class="font-serif text-4xl font-medium tracking-tight sm:text-5xl">
+        Octane
+      </h1>
+      <p class="mt-5 max-w-xl text-lg leading-relaxed text-[var(--color-muted)]">
+        Builder。专注于 AI coding agents（Claude Code、Codex、OpenCode）的架构剖析，
+        以及为重度 agent 用户打造开发者工具。
+      </p>
+      <div class="mt-6 flex gap-5 text-sm">
+        <a
+          href={SOCIALS.github}
+          class="text-[var(--color-accent)] underline-offset-4 hover:underline"
+          >GitHub →</a
+        >
+        <a
+          href="/blog"
+          class="text-[var(--color-accent)] underline-offset-4 hover:underline"
+          >Writing →</a
+        >
+      </div>
+    </section>
+
+    <section class="mt-20">
+      <h2
+        class="text-xs font-semibold uppercase tracking-wider text-[var(--color-faint)]"
+      >
+        最近文章
+      </h2>
+      <ul class="mt-6 space-y-6">
+        {
+          posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}/`} class="group block">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="font-serif text-lg font-medium tracking-tight group-hover:text-[var(--color-accent)]">
+                    {post.data.title}
+                  </h3>
+                  <FormattedDate
+                    date={post.data.date}
+                    class="shrink-0 text-sm text-[var(--color-faint)]"
+                  />
+                </div>
+                <p class="mt-1 line-clamp-2 text-[0.95rem] text-[var(--color-muted)]">
+                  {post.data.description}
+                </p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href="/blog"
+        class="mt-8 inline-block text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
+        >查看全部 →</a
+      >
+    </section>
+  </div>
+</BaseLayout>

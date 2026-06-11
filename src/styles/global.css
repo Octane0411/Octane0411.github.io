@@ -1,0 +1,193 @@
+/* Fonts are imported via JS in BaseHead.astro so the bundler emits the woff2
+   assets correctly (CSS @import of node_modules fonts fails under rolldown). */
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+/* Dark mode driven by a class on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --font-serif: "Newsreader Variable", ui-serif, Georgia, "Songti SC",
+    "SimSun", serif;
+
+  /* Editorial palette: warm off-white + charcoal, one restrained clay accent. */
+  --color-bg: #f6f5f0;
+  --color-surface: #faf9f5;
+  --color-text: #1c1b18;
+  --color-muted: #6b6862;
+  --color-faint: #97938b;
+  --color-border: #e3e0d8;
+  --color-accent: #b0552f;
+
+  --content-width: 42rem;
+}
+
+/* Dark theme token overrides. */
+.dark {
+  --color-bg: #16150f;
+  --color-surface: #1d1c16;
+  --color-text: #e9e6dd;
+  --color-muted: #a39f95;
+  --color-faint: #76726a;
+  --color-border: #2c2a22;
+  --color-accent: #d97a4f;
+}
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+a {
+  color: inherit;
+}
+
+/* Reading-optimized article typography. */
+.prose-article {
+  color: var(--color-text);
+  font-size: 1.075rem;
+  line-height: 1.8;
+  letter-spacing: 0.003em;
+}
+
+.prose-article h1,
+.prose-article h2,
+.prose-article h3,
+.prose-article h4 {
+  font-family: var(--font-serif);
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  scroll-margin-top: 5rem;
+}
+
+.prose-article h2 {
+  font-size: 1.6rem;
+  margin-top: 2.6em;
+  margin-bottom: 0.7em;
+}
+
+.prose-article h3 {
+  font-size: 1.28rem;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.prose-article p,
+.prose-article ul,
+.prose-article ol,
+.prose-article blockquote,
+.prose-article table {
+  margin-top: 1.15em;
+  margin-bottom: 1.15em;
+}
+
+.prose-article a {
+  color: var(--color-accent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+.prose-article a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+.prose-article ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+
+.prose-article ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+
+.prose-article li {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  padding-left: 0.2em;
+}
+
+.prose-article blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.1em;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.prose-article hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 2.6em 0;
+}
+
+.prose-article code:not(pre code) {
+  font-size: 0.88em;
+  background-color: color-mix(in srgb, var(--color-muted) 14%, transparent);
+  padding: 0.12em 0.38em;
+  border-radius: 4px;
+}
+
+.prose-article pre {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1em 1.15em;
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin: 1.5em 0;
+}
+
+.prose-article :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose-article th,
+.prose-article td {
+  border: 1px solid var(--color-border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.prose-article th {
+  background-color: color-mix(in srgb, var(--color-muted) 8%, transparent);
+  font-weight: 600;
+}
+
+.prose-article img {
+  border-radius: 8px;
+  margin: 1.8em auto;
+}
+
+/* Footnotes (remark-generated). */
+.prose-article .footnotes {
+  margin-top: 3em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}

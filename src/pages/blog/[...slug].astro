@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from "astro:content";
+import PostLayout from "@/layouts/PostLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Reading time: CJK counts per-char, latin per-word. ~350 cph / 220 wpm blended.
+const body = entry.body ?? "";
+const cjk = (body.match(/[\u4e00-\u9fa5]/g) ?? []).length;
+const latin = (body.replace(/[\u4e00-\u9fa5]/g, " ").match(/[A-Za-z0-9]+/g) ?? [])
+  .length;
+const readingTime = Math.max(1, Math.round(cjk / 350 + latin / 220));
+---
+
+<PostLayout entry={entry} readingTime={readingTime}>
+  <Content />
+</PostLayout>

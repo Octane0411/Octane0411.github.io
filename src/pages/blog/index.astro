@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<BaseLayout title="Writing" description="文章列表 — AI coding agents 架构剖析与开发者工具实践。">
+  <div class="mx-auto max-w-3xl px-5 py-12 sm:py-16">
+    <h1 class="font-serif text-3xl font-medium tracking-tight">Writing</h1>
+    <p class="mt-2 text-[var(--color-muted)]">
+      共 {posts.length} 篇 · 关于 AI coding agents 与开发者工具。
+    </p>
+
+    <ul class="mt-10 space-y-10">
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`} class="group block">
+              <div class="flex items-baseline justify-between gap-4">
+                <h2 class="font-serif text-xl font-medium tracking-tight group-hover:text-[var(--color-accent)]">
+                  {post.data.title}
+                </h2>
+                <FormattedDate
+                  date={post.data.date}
+                  class="shrink-0 text-sm text-[var(--color-faint)]"
+                />
+              </div>
+              <p class="mt-2 text-[0.95rem] leading-relaxed text-[var(--color-muted)]">
+                {post.data.description}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
