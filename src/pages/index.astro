@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
-import { SITE, SOCIALS } from "@/consts";
+import { SITE, SOCIALS, TAGLINE, PROJECTS } from "@/consts";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -27,35 +27,105 @@ const siteLd = {
 ---
 
 <BaseLayout jsonLd={[personLd, siteLd]}>
-  <div class="mx-auto max-w-3xl px-5 py-16 sm:py-24">
-    <section>
-      <h1 class="font-serif text-4xl font-medium tracking-tight sm:text-5xl">
+  <div class="mx-auto max-w-3xl px-5">
+    <!-- Hero -->
+    <section class="pt-16 sm:pt-24">
+      <p
+        class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-accent)]"
+      >
+        Builder · 开源 · 写作
+      </p>
+      <h1
+        class="mt-4 font-serif text-5xl font-medium tracking-tight sm:text-6xl"
+      >
         Octane
       </h1>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-[var(--color-muted)]">
-        Builder。专注于 AI coding agents（Claude Code、Codex、OpenCode）的架构剖析，
-        以及为重度 agent 用户打造开发者工具。
+      <p
+        class="mt-6 max-w-xl font-serif text-xl leading-relaxed text-[var(--color-muted)] italic"
+      >
+        {TAGLINE}
       </p>
-      <div class="mt-6 flex gap-5 text-sm">
+      <div class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+        <a
+          href="/blog"
+          class="text-[var(--color-accent)] underline-offset-4 hover:underline"
+          >读我的文章 →</a
+        >
+        <a
+          href="/about"
+          class="text-[var(--color-accent)] underline-offset-4 hover:underline"
+          >关于我 →</a
+        >
         <a
           href={SOCIALS.github}
           class="text-[var(--color-accent)] underline-offset-4 hover:underline"
           >GitHub →</a
         >
-        <a
-          href="/blog"
-          class="text-[var(--color-accent)] underline-offset-4 hover:underline"
-          >Writing →</a
-        >
       </div>
     </section>
 
-    <section class="mt-20">
-      <h2
-        class="text-xs font-semibold uppercase tracking-wider text-[var(--color-faint)]"
-      >
-        最近文章
-      </h2>
+    <!-- Narrative -->
+    <section class="mt-16 border-t border-[var(--color-border)] pt-10">
+      <p class="leading-relaxed text-[var(--color-text)]">
+        我日常重度使用 AI coding
+        agents，并把它当作主线方向：一边围绕「重度 code agent 用户的 macOS
+        原生体验」打磨开源工具，一边把工程实践和源码分析写成文章，做长期沉淀与传播。
+      </p>
+    </section>
+
+    <!-- Selected work -->
+    <section class="mt-16">
+      <div class="flex items-baseline justify-between">
+        <h2
+          class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-faint)]"
+        >
+          精选作品
+        </h2>
+        <a
+          href={SOCIALS.github}
+          class="text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
+          >更多 →</a
+        >
+      </div>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+        {
+          PROJECTS.map((p) => (
+            <a
+              href={p.href}
+              class="group flex flex-col rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-colors hover:border-[var(--color-accent)]"
+            >
+              <div class="flex items-baseline justify-between gap-3">
+                <h3 class="font-serif text-lg font-medium tracking-tight group-hover:text-[var(--color-accent)]">
+                  {p.name}
+                </h3>
+                <span class="shrink-0 text-sm text-[var(--color-faint)]">
+                  ★ {p.stars.toLocaleString()}
+                </span>
+              </div>
+              <p class="mt-2 flex-1 text-[0.92rem] leading-relaxed text-[var(--color-muted)]">
+                {p.desc}
+              </p>
+              <span class="mt-3 text-xs text-[var(--color-faint)]">{p.lang}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Recent writing -->
+    <section class="mt-16 pb-8">
+      <div class="flex items-baseline justify-between">
+        <h2
+          class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-faint)]"
+        >
+          最近文章
+        </h2>
+        <a
+          href="/blog"
+          class="text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
+          >全部 →</a
+        >
+      </div>
       <ul class="mt-6 space-y-6">
         {
           posts.map((post) => (
@@ -78,11 +148,6 @@ const siteLd = {
           ))
         }
       </ul>
-      <a
-        href="/blog"
-        class="mt-8 inline-block text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
-        >查看全部 →</a
-      >
     </section>
   </div>
 </BaseLayout>

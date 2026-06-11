@@ -21,3 +21,34 @@ export const NAV = [
   { href: "/blog", label: "Writing" },
   { href: "/about", label: "About" },
 ] as const;
+
+// One-line positioning used in the home hero.
+export const TAGLINE =
+  "Builder。为重度 code agent 用户打造工具，并深入剖析 AI coding agents 的架构与实现。";
+
+// Featured open-source work. Single source of truth for home + about.
+export const PROJECTS = [
+  {
+    name: "open-vibe-island",
+    desc: "为重度 code agent 用户设计的 macOS 工具，open vibe-island 的开源替代品。支持 cc / codex / opencode，terminal / ghostty / cmux / kaku / iterm。",
+    lang: "Swift",
+    stars: 1358,
+    href: "https://github.com/Octane0411/open-vibe-island",
+  },
+  {
+    name: "opencode-plugin-openspec",
+    desc: "OpenCode 插件，集成 OpenSpec，新增专用的 openspec-plan 模式用于创建与编辑 spec 文件。",
+    lang: "TypeScript",
+    stars: 120,
+    href: "https://github.com/Octane0411/opencode-plugin-openspec",
+  },
+] as const;
+
+export const FOCUS = [
+  "AI coding agents 架构剖析",
+  "Claude Code",
+  "Codex",
+  "OpenCode",
+  "开发者工具",
+  "macOS 原生体验",
+] as const;
